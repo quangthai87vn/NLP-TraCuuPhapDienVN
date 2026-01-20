@@ -1,5 +1,10 @@
 
-
+# Thành viên thực hiện
+```bash
+Bùi Quang Thái
+Huỳnh Thanh Vinh
+Phan Văn Trung
+```
 
 # Lệnh chạy app: Trong thư mục UI/:
 ```bash
