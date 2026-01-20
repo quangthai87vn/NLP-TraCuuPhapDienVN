@@ -13,7 +13,7 @@ streamlit run app.py
 pip install -U streamlit pandas numpy tqdm chromadb sentence-transformers torch huggingface_hub python-dotenv
 ```
 
-# Lệnh chạy app: Trong thư mục UI/:
+# Các  câu hỏi demo truy vấn hệ thống RAG
 ```bash
 Doanh nghiệp có được ưu tiên nào khi làm thủ tục hải quan
 Đăng ký khai sinh được thực hiện như thế nào ?
