@@ -4,7 +4,14 @@ pip install -U python-dotenv pandas numpy torch sentence-transformers chromadb
 
 
 
-#Lệnh chạy app: Trong thư mục UI/:
+# Lệnh chạy app: Trong thư mục UI/:
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+
+# Nếu thiếu môi trường, cài thêm thư viện
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
