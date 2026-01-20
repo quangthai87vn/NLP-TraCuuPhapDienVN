@@ -34,10 +34,10 @@ def abs_path(p: str) -> str:
 
 def get_settings() -> Settings:
     return Settings(
-        CSV_PATH=_env("CSV_PATH", "backend/rag/qna-sql/pdchude.csv"),
+        CSV_PATH=_env("CSV_PATH", "data/pdchude.csv"),
         CHROMA_DIR=_env("CHROMA_DIR", "UI/vector_db"),
         CHROMA_COLLECTION=_env("CHROMA_COLLECTION", "iuh_law_advisor_2026"),
-        SQLITE_PATH=_env("SQLITE_PATH", "UI/data/ui.sqlite3"),
+        SQLITE_PATH=_env("SQLITE_PATH", "data/ui.sqlite3"),
         EMBED_MODEL_ID=_env("EMBED_MODEL_ID", "keepitreal/vietnamese-sbert"),
         EMBED_DEVICE=_env("EMBED_DEVICE", "auto"),
         DEFAULT_TOP_K=int(_env("DEFAULT_TOP_K", "5")),
