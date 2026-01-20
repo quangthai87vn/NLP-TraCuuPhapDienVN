@@ -1,0 +1,176 @@
+/* ===== Global ===== */
+:root{
+  --bg: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --card: #ffffff;
+  --line: rgba(0,0,0,0.08);
+  --shadow: 0 10px 30px rgba(0,0,0,0.08);
+  --brand: #6b5b4b;
+}
+
+.block-container{
+  padding-top: 1.2rem !important;
+  max-width: 1280px;
+}
+
+/* ===== Top bar ===== */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding: 29px 10px 14px 0;
+}
+
+.brand{
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: var(--text);
+  font-size: 20px;
+}
+
+.nav a{
+  margin-left: 18px;
+  text-decoration:none;
+  color: var(--muted);
+  font-weight: 500;
+}
+.nav a:hover{ color: var(--text); }
+
+/* ===== Hero ===== */
+.hero{
+  border-radius: 14px;
+  overflow:hidden;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+  background: linear-gradient(90deg, #cfc7ba 0%, #b9b1a4 50%, #8b8272 100%);
+  padding: 0;
+}
+
+.hero-inner{
+  display:flex;
+  gap: 24px;
+  padding: 28px 30px;
+  align-items:center;
+}
+
+.hero-left{
+  width: 44%;
+  min-width: 360px;
+}
+
+.hero-right{
+  width: 56%;
+  color: white;
+}
+
+.hero-title{
+  font-size: 46px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  line-height: 1.05;
+}
+
+.hero-sub{
+  font-size: 18px;
+  opacity: .95;
+  margin: 0 0 14px 0;
+}
+
+.hero-bullets{
+  margin: 0;
+  padding-left: 18px;
+  font-size: 16px;
+  opacity: .95;
+}
+.hero-bullets li{ margin: 6px 0; }
+
+/* ===== Search ===== */
+.section-title{
+  text-align:center;
+  font-size: 28px;
+  font-weight: 800;
+  margin: 22px 0 12px 0;
+}
+
+.search-wrap{
+  display:flex;
+  justify-content:center;
+  margin-bottom: 8px;
+}
+
+.search-inner{
+  width: 52%;
+  min-width: 520px;
+  max-width: 720px;
+}
+
+/* ===== Featured ===== */
+.feature-title{
+  text-align:center;
+  font-size: 30px;
+  font-weight: 900;
+  margin: 16px 0 14px 0;
+}
+
+.card{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 14px 12px 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  height: 100%;
+}
+
+.card h4{
+  text-align:center;
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.card p{
+  text-align:center;
+  margin: 10px 0 10px 0;
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 46px;
+}
+
+.card-img{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height: 150px;
+  border-radius: 10px;
+  background: #f6f7fb;
+  border: 1px dashed rgba(0,0,0,0.12);
+}
+
+.card-img img{
+  max-height: 120px;
+  max-width: 90%;
+}
+
+/* Streamlit button look (limited) */
+div.stButton > button{
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: #6b5b4b;
+  color: white;
+  padding: 10px 12px;
+  font-weight: 700;
+}
+div.stButton > button:hover{
+  filter: brightness(1.05);
+}
+
+/* Footer */
+.footer{
+  text-align:center;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 18px;
+  padding: 14px 0 6px 0;
+}
