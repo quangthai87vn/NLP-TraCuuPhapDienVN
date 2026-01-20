@@ -17,7 +17,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-#Lệnh chạy app: Trong thư mục UI/:
+# Lệnh chạy app: Trong thư mục UI/:
 ```bash
 Doanh nghiệp có được ưu tiên nào khi làm thủ tục hải quan
 Đăng ký khai sinh được thực hiện như thế nào ?
