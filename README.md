@@ -5,19 +5,16 @@ Bùi Quang Thái
 Huỳnh Thanh Vinh
 Phan Văn Trung
 ```
-
-# Lệnh chạy app: Trong thư mục UI/:
+# Lệnh chạy app: Trong thư mục UI/: sử dụng Python 3.12
 ```bash
+cd UI
 pip install -r requirements.txt
 streamlit run app.py
 ```
-
-
 # Nếu thiếu môi trường, cài thêm thư viện
 ```bash
 pip install -U streamlit pandas numpy tqdm chromadb sentence-transformers torch huggingface_hub python-dotenv
 ```
-
 # Các  câu hỏi demo truy vấn hệ thống RAG
 ```bash
 Doanh nghiệp có được ưu tiên nào khi làm thủ tục hải quan
