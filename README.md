@@ -8,7 +8,7 @@ Phan Văn Trung
 # Giao diện ứng dụng
 ![](./images/giaodien1.png)
 
-# Giao diiện Embedding
+# Giao diện Embedding
 ![](./images/embedding.png)
 
 Vào thư mục dự án thấy có tập tin ".env.example" Hãy copy ra và đặt tên là ".env" tập tin này sẽ khởi tạo biiến môi trường cho toàn bộ dự án.
