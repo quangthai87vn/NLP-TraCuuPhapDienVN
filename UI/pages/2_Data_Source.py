@@ -1,47 +1,54 @@
 # UI/pages/2_Data_Source.py
-import pandas as pd
-import streamlit as st
+import os
 from pathlib import Path
 
-st.set_page_config(page_title="Data Source", page_icon="📚", layout="wide")
+import pandas as pd
+import streamlit as st
 
-# ---- load settings (tương thích cả trường hợp bạn đổi config.py) ----
-try:
-    from core.config import settings  # nếu bạn có settings = get_settings()
-except Exception:
-    from core.config import get_settings
-    settings = get_settings()
+st.set_page_config(page_title="Data Source", layout="wide")
+st.title("📚 Data Source")
+st.caption("Load CSV trực tiếp từ biến môi trường CSV_PATH")
 
-# ---- helpers ----
-def read_csv_auto(path: Path) -> pd.DataFrame:
-    try:
-        return pd.read_csv(path, encoding="utf-8")
-    except Exception:
-        return pd.read_csv(path, encoding="latin1")
+CSV_PATH = os.getenv("CSV_PATH", "").strip()
 
-# Repo root = .../RAG-TraCuuPhapLuatVN
-# pages/2_Data_Source.py -> parents[0]=pages, [1]=UI, [2]=root
-ROOT = Path(__file__).resolve().parents[2]
+st.sidebar.subheader("⚙️ Cấu hình")
+st.sidebar.text_input("CSV_PATH", value=CSV_PATH, disabled=True)
 
-# Lấy CSV_PATH từ .env (thông qua settings)
-csv_raw = getattr(settings, "CSV_PATH", None) or ""
-if not csv_raw.strip():
-    st.error("❌ CSV_PATH đang rỗng. Hãy set trong file .env (ở thư mục gốc).")
+if not CSV_PATH:
+    st.error("❌ Chưa có biến môi trường CSV_PATH. Hãy set CSV_PATH trong .env hoặc export trước khi chạy.")
     st.stop()
 
-csv_path = Path(csv_raw)
-
-# Nếu CSV_PATH là đường dẫn tương đối -> hiểu theo root project
-if not csv_path.is_absolute():
-    csv_path = (ROOT / csv_path).resolve()
-
-st.markdown("## 📚 Data Source")
-st.caption(f"CSV_PATH = `{csv_path}`")
-
-if not csv_path.exists():
-    st.error("❌ Không tìm thấy file CSV theo CSV_PATH.")
-    st.code(str(csv_path), language="text")
+csv_file = Path(CSV_PATH)
+if not csv_file.exists():
+    st.error(f"❌ Không tìm thấy file CSV: {csv_file}")
     st.stop()
 
-df = read_csv_auto(csv_path)
-st.dataframe(df, use_container_width=True, height=740)
+@st.cache_data(show_spinner=False)
+def load_csv(p: str) -> pd.DataFrame:
+    # tip: nếu CSV bạn có encoding khác thì đổi utf-8-sig -> utf-8 / cp1258
+    return pd.read_csv(p, encoding="utf-8-sig")
+
+with st.spinner("Đang load CSV..."):
+    df = load_csv(str(csv_file))
+
+st.success(f"✅ Loaded: {csv_file.name} | Rows: {len(df):,} | Cols: {len(df.columns)}")
+
+# Bộ lọc đơn giản
+with st.expander("🔎 Lọc nhanh", expanded=False):
+    cols = list(df.columns)
+    key_col = st.selectbox("Chọn cột để search", cols, index=0)
+    q = st.text_input("Nhập từ khóa", "")
+    limit = st.slider("Số dòng hiển thị", 50, 2000, 200, 50)
+
+    if q.strip():
+        mask = df[key_col].astype(str).str.contains(q, case=False, na=False)
+        view = df[mask].head(limit)
+    else:
+        view = df.head(limit)
+
+st.dataframe(view, use_container_width=True)
+
+# Cho tải lại cache nếu muốn
+if st.button("🔄 Reload CSV (clear cache)"):
+    st.cache_data.clear()
+    st.rerun()

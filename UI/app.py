@@ -8,6 +8,13 @@ st.set_page_config(page_title="NLP - IUH Law Advisor 2026", layout="wide")
 
 
 
+
+# UI/app.py (thêm lên đầu file)
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+
+
+
 # Load CSS
 css_path = ASSETS / "styles.css"
 if css_path.exists():
