@@ -14,6 +14,9 @@ Phan Văn Trung
 # Giao diện Embedding
 ![](./images/embedding.png)
 
+# Giao diện Chatbot
+![](./images/chatbot.png)
+
 Vào thư mục dự án thấy có tập tin ".env.example" Hãy copy ra và đặt tên là ".env" tập tin này sẽ khởi tạo biiến môi trường cho toàn bộ dự án.
 
 # Lệnh chạy app: Trong thư mục UI/: sử dụng Python 3.12
