@@ -86,6 +86,11 @@ with colB:
             )
 
 # ===== Execute embedding =====
+from pathlib import Path
+st.write("CSV exists:", Path(csv_path).exists(), "->", csv_path)
+
+
+
 if run_btn:
     t0 = time.time()
     run_id = None
