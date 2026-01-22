@@ -3,87 +3,85 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import chromadb
-from chromadb.config import Settings as ChromaSettings
 
 from .config import settings, abs_path
 
 
 @dataclass
 class Hit:
+    id: str
     doc: str
     meta: Dict[str, Any]
     distance: float
-    id: str  # vẫn giữ để dùng nếu Chroma trả ids
-
-
-_embedder = None
-_embedder_device = None
-
-
-def _resolve_device(device: str) -> str:
-    if device and device.lower() != "auto":
-        return device.lower()
-    try:
-        import torch
-        return "cuda" if torch.cuda.is_available() else "cpu"
-    except Exception:
-        return "cpu"
-
-
-def _get_embedder():
-    global _embedder, _embedder_device
-    if _embedder is None:
-        from sentence_transformers import SentenceTransformer
-        _embedder_device = _resolve_device(settings.EMBED_DEVICE)
-        _embedder = SentenceTransformer(settings.EMBED_MODEL_ID, device=_embedder_device)
-    return _embedder
 
 
 class ChromaStore:
-    def __init__(self, persist_dir: str, collection_name: str):
-        p = Path(abs_path(persist_dir))
+    def __init__(self, persist_dir: str | Path, collection_name: str):
+        p = abs_path(persist_dir)
         p.mkdir(parents=True, exist_ok=True)
 
-        self.persist_dir = p
-        self.collection_name = collection_name
+        # ✅ Chroma persistent client
+        self.client = chromadb.PersistentClient(path=str(p))
+        self.col = self.client.get_or_create_collection(name=collection_name)
 
-        self.client = chromadb.PersistentClient(
-            path=str(self.persist_dir),
-            settings=ChromaSettings(anonymized_telemetry=False),
-        )
-        self.col = self.client.get_or_create_collection(name=self.collection_name)
+        self._embedder = None
 
-    def query(self, text: str, top_k: int = 5) -> List[Hit]:
-        embedder = _get_embedder()
-        vec = embedder.encode([text], normalize_embeddings=True).tolist()[0]
+    def _get_embedder(self):
+        if self._embedder is not None:
+            return self._embedder
 
-        # ✅ FIX: include KHÔNG được có "ids"
+        # Lazy import để tránh load nặng khi chưa dùng
+        try:
+            from sentence_transformers import SentenceTransformer  # type: ignore
+        except Exception as e:
+            raise RuntimeError(
+                "Thiếu thư viện sentence-transformers. Cài: pip install sentence-transformers"
+            ) from e
+
+        device = settings.EMBED_DEVICE
+        if device == "auto":
+            # ưu tiên cuda nếu có
+            try:
+                import torch  # type: ignore
+
+                device = "cuda" if torch.cuda.is_available() else "cpu"
+            except Exception:
+                device = "cpu"
+
+        self._embedder = SentenceTransformer(settings.EMBED_MODEL_ID, device=device)
+        return self._embedder
+
+    def embed_query(self, text: str) -> List[float]:
+        model = self._get_embedder()
+        vec = model.encode([text], normalize_embeddings=True)
+        return vec[0].tolist()
+
+    def query(self, question: str, top_k: int = 5) -> List[Hit]:
+        q_emb = self.embed_query(question)
+
+        # ✅ include KHÔNG được chứa "ids" (Chroma sẽ trả ids sẵn trong res["ids"])
         res = self.col.query(
-            query_embeddings=[vec],
+            query_embeddings=[q_emb],
             n_results=top_k,
             include=["documents", "metadatas", "distances"],
         )
 
+        ids = (res.get("ids") or [[]])[0]
         docs = (res.get("documents") or [[]])[0]
         metas = (res.get("metadatas") or [[]])[0]
         dists = (res.get("distances") or [[]])[0]
 
-        # ids: tuỳ version chroma, có thể có hoặc không
-        ids_list = res.get("ids")
-        ids = (ids_list or [[]])[0] if isinstance(ids_list, list) else []
-
         hits: List[Hit] = []
-        for i, (doc, meta, dist) in enumerate(zip(docs, metas, dists)):
-            _id = ids[i] if i < len(ids) else str(i)
+        for i in range(len(ids)):
             hits.append(
                 Hit(
-                    doc=doc or "",
-                    meta=meta or {},
-                    distance=float(dist),
-                    id=str(_id),
+                    id=str(ids[i]),
+                    doc=str(docs[i] or ""),
+                    meta=dict(metas[i] or {}),
+                    distance=float(dists[i]),
                 )
             )
         return hits
