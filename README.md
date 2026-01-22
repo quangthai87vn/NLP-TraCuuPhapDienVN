@@ -5,6 +5,11 @@ Bùi Quang Thái
 Huỳnh Thanh Vinh
 Phan Văn Trung
 ```
+
+![](./images/giaodien1.png)
+
+
+
 # Lệnh chạy app: Trong thư mục UI/: sử dụng Python 3.12
 ```bash
 cd UI
